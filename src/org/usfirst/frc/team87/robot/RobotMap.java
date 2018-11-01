@@ -14,19 +14,6 @@ package org.usfirst.frc.team87.robot;
  * floating around.
  */
 public class RobotMap {
-	
-	
-	
-	// 13 14 15 16
-	
-	// Subject to changes
-//	public static int leftFrontMotor = 13;
-//	public static int leftRearMotor = 14;
-//	public static int rightFrontMotor = 15;
-//	public static int rightRearMotor = 16;
-//	
-//	public static int joystick = 0;
-//	public static int gamepad = 1;
 	// For example to map the left and right motors, you could define the
 	// following variables to use with your drivetrain subsystem.
 	// public static int leftMotor = 1;
