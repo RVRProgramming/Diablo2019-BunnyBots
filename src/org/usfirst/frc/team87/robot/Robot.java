@@ -7,13 +7,35 @@
 
 package org.usfirst.frc.team87.robot;
 
+// Not used so JAVA can stfu
+/*
+ *import edu.wpi.first.wpilibj.GamepadBase;
+ *import edu.wpi.first.wpilibj.SpeedController;
+ *import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+*/
+
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+// API Imports
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team87.robot.commands.ExampleCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+// Project Imports
+// import org.usfirst.frc.team87.robot.commands.ExampleCommand;
+// import org.usfirst.frc.team87.robot.commands.AutonomousCommand;
+import org.usfirst.frc.team87.robot.commands.*;
 import org.usfirst.frc.team87.robot.subsystems.ExampleSubsystem;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,11 +45,38 @@ import org.usfirst.frc.team87.robot.subsystems.ExampleSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
+	// Examples
 	public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
 	public static OI m_oi;
+	
+	// A timer
+	Timer timer = new Timer();
+	
+	
+	// CHANNEL NUMBERS ARE SUBJECT TO CHANGE
+	Talon leftFrontMotor = new Talon(13);
+	Talon leftRearMotor = new Talon(14);
+	Talon rightFrontMotor = new Talon(15);
+	Talon rightRearMotor = new Talon(16);
+	
+	SpeedControllerGroup leftMotorDrive = new SpeedControllerGroup(leftFrontMotor, leftRearMotor);
+	SpeedControllerGroup rightMotorDrive = new SpeedControllerGroup(rightFrontMotor, rightRearMotor);
+	
+	DifferentialDrive drive = new DifferentialDrive(leftMotorDrive, rightMotorDrive);
+	
+	
+	// Gamepad can be a Joystick or XBoxController or GenericHID(deprecated)
+	
+	Joystick joystick = new Joystick(0);
+	Joystick gamepad = new Joystick(1);
+	XboxController dapemag = new XboxController(3);
 
-	Command m_autonomousCommand;
-	SendableChooser<Command> m_chooser = new SendableChooser<>();
+	
+	Command autonomousCommand;
+	SendableChooser<Command> sendableChooser = new SendableChooser<>();
+	
+	//Command m_autonomousCommand;
+	//SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -36,9 +85,12 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		m_oi = new OI();
-		m_chooser.addDefault("Default Auto", new ExampleCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", m_chooser);
+		sendableChooser.addDefault("Default Auto", new ExampleCommand());
+		sendableChooser.addObject("My Auto", new AutonomousCommand());
+		SmartDashboard.putData("Auto mode", sendableChooser);
+		
+		// Camera Feed - One Line 😂😂😂
+		CameraServer.getInstance().startAutomaticCapture(0);
 	}
 
 	/**
@@ -69,18 +121,28 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_autonomousCommand = m_chooser.getSelected();
-
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
-		 */
+		autonomousCommand = sendableChooser.getSelected();
+		
+		timer.reset();
+		timer.start();
+		
+		
+		 String autoSelected = SmartDashboard.getString("Auto Selector", "Default"); 
+		 
+		 switch(autoSelected){
+		 	case "My Auto": autonomousCommand = new AutonomousCommand();
+		 		break;
+		 	
+		 	case "Default Auto":
+		 		
+		 	default:autonomousCommand = new ExampleCommand(); 
+		 		break; 
+		 }
+		 
 
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.start();
+		if (autonomousCommand != null) {
+			autonomousCommand.start();
 		}
 	}
 
@@ -98,8 +160,8 @@ public class Robot extends TimedRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
 		}
 	}
 
@@ -109,6 +171,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		
+		
+		// Simple drive functionality of the drive base
+		leftMotorDrive.set(gamepad.getRawAxis(2));
+		rightMotorDrive.set(gamepad.getRawAxis(3));
+		
+		
 	}
 
 	/**
