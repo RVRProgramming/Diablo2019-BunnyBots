@@ -2,7 +2,7 @@ package org.usfirst.frc.team87.robot.subsystems;
 
 
 import org.usfirst.frc.team87.robot.RobotMap;
-import org.usfirst.frc.team87.robot.commands.TeleopCommand;
+import org.usfirst.frc.team87.robot.commands.TeleopDriveCommand;
 
 //import edu.wpi.first.wpilibj.GamepadBase;
 import edu.wpi.first.wpilibj.Joystick;
@@ -37,15 +37,17 @@ public class DriveBaseSubsystem extends Subsystem {
 	}
 
 	public void autonomousDrive() {
-		while(timer.get() < 4) {
-			robotDrive.tankDrive(0.5, 0.5);
-		}
-		while(timer.get() > 4 && timer.get() < 8) {
-			robotDrive.tankDrive(-0.5, -0.5);
-		}
+
 	}
 	
-	public void teleopDrive(String driveType) {
+	public void teleopDrive() {
+		if(gamepad.getRawButton(1)) {
+//			System.out.println("IT WORKS");
+			robotDrive.tankDrive(0.5, 0.5);
+		}
+//		System.out.println("ONes");
+		
+		/*
 		switch(driveType) {
 			
 			// Drive with two joysticks
@@ -57,11 +59,12 @@ public class DriveBaseSubsystem extends Subsystem {
 				break;
 				
 		}
+		*/
 	}
 	
 	
 	public void disableDrive() {
-		robotDrive.stopMotor();
+		//robotDrive.stopMotor();
 	}
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.

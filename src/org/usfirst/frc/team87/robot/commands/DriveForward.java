@@ -1,15 +1,21 @@
 package org.usfirst.frc.team87.robot.commands;
 
+
+
+import org.usfirst.frc.team87.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.Command;
+
 
 /**
  *
  */
-public class TeleopCommand extends Command {
+public class DriveForward extends Command {
 
-    public TeleopCommand() {
+    public DriveForward() {
         // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+        // eg. requires(chassis);    
+    	requires(Robot.driveBaseSubsystem);
     }
 
     // Called just before this Command runs the first time
@@ -18,6 +24,7 @@ public class TeleopCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	
     }
 
     // Make this return true when this Command no longer needs to run execute()
