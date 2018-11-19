@@ -38,7 +38,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
  */
 public class Robot extends IterativeRobot {
 	
-
+	
 	
 	// Values are arbitrary
 	Encoder leftEncoder = new Encoder(0, 0);
@@ -145,7 +145,10 @@ public class Robot extends IterativeRobot {
 		_robotDrive.setDeadband(0.10);
 		_robotDrive.tankDrive(_gamepad.getRawAxis(2) * -1.0, _gamepad.getRawAxis(3) * -1.0);
 		
-		System.out.print(_robot);
+		// Print Motor Outputs
+		for(int i = 0; 0 <= 3; i++) {			
+			System.out.println(talonList.get(i).getMotorOutputPercent());
+		}
 	}
 	
 	/**
