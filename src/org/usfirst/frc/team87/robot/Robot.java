@@ -7,17 +7,27 @@
 
 package org.usfirst.frc.team87.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.AnalogAccelerometer;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
+import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 
-//import edu.wpi.first.wpil
+import java.awt.List;
+import java.util.ArrayList;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,27 +37,59 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
  * project.
  */
 public class Robot extends IterativeRobot {
+	
 
+	
+	// Values are arbitrary
+	Encoder leftEncoder = new Encoder(0, 0);
+	Encoder rightEncoder = new Encoder(0, 1);
+	Gyro analogGyro = new AnalogGyro(0);
+	
+	Timer timer = new Timer();
+	
+	SmartDashboard _smartDashboard = new SmartDashboard();
 
+	// PWM Vex Motor
 	PWMVictorSPX _PWMVICTOR = new PWMVictorSPX(0);
 	
-	WPI_TalonSRX _leftFrontMotor = new WPI_TalonSRX(3);
-	WPI_TalonSRX _leftRearMotor = new WPI_TalonSRX(1);//
-	WPI_TalonSRX _rightFrontMotor = new WPI_TalonSRX(2);//
-	WPI_TalonSRX _rightRearMotor = new WPI_TalonSRX(4);
+	WPI_TalonSRX _leftFrontMotor = new WPI_TalonSRX(RobotMap.LEFTFRONTMOTOR);
+	WPI_TalonSRX _leftRearMotor = new WPI_TalonSRX(RobotMap.LEFTREARMOTOR);
+	WPI_TalonSRX _rightFrontMotor = new WPI_TalonSRX(RobotMap.RIGHTFRONTMOTOR);
+	WPI_TalonSRX _rightRearMotor = new WPI_TalonSRX(RobotMap.RIGHTREARMOTOR);
+	
+	ArrayList<WPI_TalonSRX> talonList = new ArrayList<WPI_TalonSRX>();
+	
+	//{_leftFrontMotor, _leftRearMotor, _rightFrontMotor, _rightRearMotor};
 	
 	SpeedControllerGroup _leftDrive = new SpeedControllerGroup(_leftFrontMotor, _leftRearMotor);
 	SpeedControllerGroup _rightDrive = new SpeedControllerGroup(_rightFrontMotor, _rightRearMotor);
 	
 	DifferentialDrive _robotDrive = new DifferentialDrive(_leftDrive, _rightDrive);
 
+	
+	int kP, kI, kD = 0;
+	PIDController leftPidController = new PIDController(kP, kI, kD, leftEncoder, _leftDrive);
+	PIDController rightPidController = new PIDController(kP, kI, kD, rightEncoder, _rightDrive);
+	
 	Joystick _joystick = new Joystick(0);
 	Joystick _gamepad = new Joystick(1);
 	
 	@Override
 	public void robotInit() {
-		//Makes sure motor spins correctly
-		//_redline.setInverted(false);
+		
+		_leftFrontMotor.setInverted(false);
+		_leftRearMotor.setInverted(false);
+		_rightFrontMotor.setInverted(false);
+		_rightRearMotor.setInverted(false);
+		
+		
+		SmartDashboard.putBoolean("Robot Running", false);
+		SmartDashboard.putBoolean("Full Speed", false);
+		
+		talonList.add(_leftFrontMotor);
+		talonList.add(_leftRearMotor);
+		talonList.add(_rightFrontMotor);
+		talonList.add(_rightRearMotor);
 		
 	}
 
@@ -63,7 +105,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-
+		timer.reset();
+		timer.start();
 	}
 
 	/**
@@ -72,10 +115,14 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		while(timer.get() < 2.0) {
+			_robotDrive.tankDrive(0.5, -0.5);
+		}
 	}
 
 	@Override
 	public void teleopInit() {
+		SmartDashboard.getBoolean("Robot Running", true);
 		
 	}
 
@@ -86,37 +133,27 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		
-		// Make forward on joystick positive
-		
-		/*
+		// Deadband Elimination; Might Not Be Used
 		double forward = _joystick.getY() * -1.0;
-		
 		if(Math.abs(forward) < 0.10) {
 			forward = 0;
 		}
-		*/
 		
-		// Test for output of redline
-		//_redline.set(forward);
-		//_PWMVICTOR.set(forward);
-		//System.out.println(_redline.get());
-		//System.out.println(_PWMVICTOR.get());
+		// Working Joystick Test
+		SmartDashboard.putNumber("Joystick Values", _joystick.getY() * -1.0	);
 		
-		//_robotDrive.tankDrive(_gamepad.getRawAxis(2), _gamepad.getRawAxis(3));
-	
-		if(_gamepad.getRawButton(2)) {
-			_robotDrive.tankDrive(_gamepad.getRawAxis(2) * -1.0, _gamepad.getRawAxis(3) * -1.0);
-		} else {			
-			_robotDrive.tankDrive(_gamepad.getRawAxis(2), _gamepad.getRawAxis(3));
-		}
+		_robotDrive.setDeadband(0.10);
+		_robotDrive.tankDrive(_gamepad.getRawAxis(2) * -1.0, _gamepad.getRawAxis(3) * -1.0);
 		
+		System.out.print(_robot);
 	}
-
+	
 	/**
 	 * This function is called periodically during test mode.
 	 */
 	@Override
 	public void testPeriodic() {
+		
 		
 	}
 }

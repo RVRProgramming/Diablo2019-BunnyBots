@@ -1,0 +1,103 @@
+{
+  "dividerPosition": 0.359039190897598,
+  "tabPane": [
+    {
+      "title": "Scene 1",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Robot Running",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "1,0": {
+            "size": [
+              1,
+              2
+            ],
+            "content": {
+              "_type": "PID Controller",
+              "_title": "DriveTrain PID "
+            }
+          },
+          "2,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Speed Controller",
+              "_title": "Speed Controller",
+              "controllable": false,
+              "orientation": "VERTICAL"
+            }
+          },
+          "4,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Gyro",
+              "_title": "Robot Gryo",
+              "majorTickSpace": 45.0,
+              "startAngle": 180.0,
+              "tickMarkRingVisible": true
+            }
+          },
+          "0,2": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Differential Drivebase",
+              "_title": "Differential Drive",
+              "numberOfWheels": 4,
+              "wheelDiameter": 80.0,
+              "showVectors": true
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Accelerometer",
+              "_title": "1-Axis Accel.",
+              "showText": true,
+              "numDecimals": 2,
+              "showTickMarks": false,
+              "min": -1.0,
+              "max": 1.0
+            }
+          },
+          "0,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_title": "Joystick Working"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
