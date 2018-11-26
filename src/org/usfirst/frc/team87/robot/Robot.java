@@ -17,8 +17,9 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
-import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,18 +37,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
  * creating this project, you must also update the build.properties file in the
  * project.
  */
+
 public class Robot extends IterativeRobot {
-	
-	
-	
-	// Values are arbitrary
-	Encoder leftEncoder = new Encoder(0, 0);
-	Encoder rightEncoder = new Encoder(0, 1);
-	Gyro analogGyro = new AnalogGyro(0);
 	
 	Timer timer = new Timer();
 	
-	SmartDashboard _smartDashboard = new SmartDashboard();
 
 	// PWM Vex Motor
 	PWMVictorSPX _PWMVICTOR = new PWMVictorSPX(0);
@@ -68,8 +62,8 @@ public class Robot extends IterativeRobot {
 
 	
 	int kP, kI, kD = 0;
-	PIDController leftPidController = new PIDController(kP, kI, kD, leftEncoder, _leftDrive);
-	PIDController rightPidController = new PIDController(kP, kI, kD, rightEncoder, _rightDrive);
+	//PIDController leftPidController = new PIDController(kP, kI, kD, leftEncoder, _leftDrive);
+	//PIDController rightPidController = new PIDController(kP, kI, kD, rightEncoder, _rightDrive);
 	
 	Joystick _joystick = new Joystick(0);
 	Joystick _gamepad = new Joystick(1);
@@ -80,17 +74,15 @@ public class Robot extends IterativeRobot {
 		_leftFrontMotor.setInverted(false);
 		_leftRearMotor.setInverted(false);
 		_rightFrontMotor.setInverted(false);
-		_rightRearMotor.setInverted(false);
-		
-		
-		SmartDashboard.putBoolean("Robot Running", false);
-		SmartDashboard.putBoolean("Full Speed", false);
+		_rightRearMotor.setInverted(false);		
 		
 		talonList.add(_leftFrontMotor);
 		talonList.add(_leftRearMotor);
 		talonList.add(_rightFrontMotor);
 		talonList.add(_rightRearMotor);
 		
+		SmartDashboard.getNumber("Gamepad Left Value", 0.0);
+		SmartDashboard.getNumber("Gamepad Right Value", 0.0);
 	}
 
 	@Override
@@ -122,8 +114,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		SmartDashboard.getBoolean("Robot Running", true);
-		
+		System.out.println(talonList);
 	}
 
 	/**
@@ -132,23 +123,33 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+
 		
 		// Deadband Elimination; Might Not Be Used
+		/*
 		double forward = _joystick.getY() * -1.0;
 		if(Math.abs(forward) < 0.10) {
 			forward = 0;
 		}
+		*/
 		
 		// Working Joystick Test
-		SmartDashboard.putNumber("Joystick Values", _joystick.getY() * -1.0	);
-		
 		_robotDrive.setDeadband(0.10);
-		_robotDrive.tankDrive(_gamepad.getRawAxis(2) * -1.0, _gamepad.getRawAxis(3) * -1.0);
+		_robotDrive.tankDrive(_gamepad.getRawAxis(2), _gamepad.getRawAxis(3));
 		
+		SmartDashboard.putNumber("Gamepad Left Value", _gamepad.getRawAxis(2));
+		SmartDashboard.putNumber("Gamepad Right Value", _gamepad.getRawAxis(3));
+		
+		SmartDashboard.putNumber("Left Drive", _leftDrive.get());
+		SmartDashboard.putNumber("Right Drive", _rightDrive.get() * -1.0);
+		
+		
+		/*
 		// Print Motor Outputs
 		for(int i = 0; 0 <= 3; i++) {			
 			System.out.println(talonList.get(i).getMotorOutputPercent());
 		}
+		*/
 	}
 	
 	/**
@@ -156,7 +157,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		
 		
 	}
 }

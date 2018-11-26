@@ -1,0 +1,31 @@
+<xml version="1.0">
+<dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="765" y="63"/>
+		<width>630</width>
+		<height>556</height>
+		<property name="Image File" value="C:\Users\RVR87Robotics\Desktop\Kevinjpg"/>
+		<property name="Maintain Aspect Ratio" value="true"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="0" y="121"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="0" y="0"/>
+		<property name="Camera Choice" value=""/>
+		<property name="Selected Camera Path" value="/dev/video0"/>
+	</static-widget>
+</dashboard>
+<live-window>
+	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<widget field="PWMVictorSPX[0]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="16"/>
+			<height>46</height>
+			<width>293</width>
+		</widget>
+		<location x="0" y="0"/>
+		<width>305</width>
+		<height>69</height>
+	</widget>
+</live-window>
+</xml>
