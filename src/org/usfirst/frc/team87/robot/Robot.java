@@ -143,6 +143,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Left Drive", _leftDrive.get());
 		SmartDashboard.putNumber("Right Drive", _rightDrive.get() * -1.0);
 		
+		while(_gamepad.getRawButton(1)) {
+			_robotDrive.tankDrive(_gamepad.getRawAxis(2) * -1.0, -_gamepad.getRawAxis(3) * -1.0);
+		}
+		
 		
 		/*
 		// Print Motor Outputs
