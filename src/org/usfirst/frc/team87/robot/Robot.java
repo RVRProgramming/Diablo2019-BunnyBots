@@ -7,10 +7,12 @@
 
 package org.usfirst.frc.team87.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.AnalogAccelerometer;
+import edu.wpi.first.wpilibj.command.*;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -22,10 +24,15 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.Timer;
 
 import java.awt.List;
 import java.util.ArrayList;
+
+import org.usfirst.frc.team87.robot.commands.ArcadeDrive;
+import org.usfirst.frc.team87.robot.commands.TankDrive;
+import org.usfirst.frc.team87.robot.subsystems.DriveBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -41,7 +48,16 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class Robot extends IterativeRobot {
 	
 	Timer timer = new Timer();
+
+	Command tankDriveCommand;
+	Command arcadeDriveCommand;
+	Command teleopCommand;
 	
+	SendableChooser<Command> teleopCommandSC = new SendableChooser<>();
+	
+	DriveBase driveBase = new DriveBase();
+	
+	/*
 
 	// PWM Vex Motor
 	PWMVictorSPX _PWMVICTOR = new PWMVictorSPX(0);
@@ -64,25 +80,25 @@ public class Robot extends IterativeRobot {
 	int kP, kI, kD = 0;
 	//PIDController leftPidController = new PIDController(kP, kI, kD, leftEncoder, _leftDrive);
 	//PIDController rightPidController = new PIDController(kP, kI, kD, rightEncoder, _rightDrive);
+	 */
+	
+//	Gyro gyro = new GyroBase(0);
 	
 	Joystick _joystick = new Joystick(0);
 	Joystick _gamepad = new Joystick(1);
 	
+	
 	@Override
 	public void robotInit() {
+		driveBase.driveBaseInit();
 		
-		_leftFrontMotor.setInverted(false);
-		_leftRearMotor.setInverted(false);
-		_rightFrontMotor.setInverted(false);
-		_rightRearMotor.setInverted(false);		
-		
-		talonList.add(_leftFrontMotor);
-		talonList.add(_leftRearMotor);
-		talonList.add(_rightFrontMotor);
-		talonList.add(_rightRearMotor);
 		
 		SmartDashboard.getNumber("Gamepad Left Value", 0.0);
 		SmartDashboard.getNumber("Gamepad Right Value", 0.0);
+		
+		teleopCommandSC.addObject("Arcade Drive", new ArcadeDrive());
+		teleopCommandSC.addDefault("Tank Drive", new TankDrive());
+		SmartDashboard.putData("Teleop Mode", teleopCommandSC);
 	}
 
 	@Override
@@ -97,8 +113,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		/*
 		timer.reset();
 		timer.start();
+		*/
 	}
 
 	/**
@@ -107,14 +125,11 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		while(timer.get() < 2.0) {
-			_robotDrive.tankDrive(0.5, -0.5);
-		}
 	}
 
 	@Override
 	public void teleopInit() {
-		System.out.println(talonList);
+		
 	}
 
 	/**
@@ -124,7 +139,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 
-		
+		teleopCommand = teleopCommandSC.getSelected();
 		// Deadband Elimination; Might Not Be Used
 		/*
 		double forward = _joystick.getY() * -1.0;
@@ -132,28 +147,12 @@ public class Robot extends IterativeRobot {
 			forward = 0;
 		}
 		*/
-		
-		// Working Joystick Test
-		_robotDrive.setDeadband(0.10);
-		_robotDrive.tankDrive(_gamepad.getRawAxis(2), _gamepad.getRawAxis(3));
-		
+
 		SmartDashboard.putNumber("Gamepad Left Value", _gamepad.getRawAxis(2));
 		SmartDashboard.putNumber("Gamepad Right Value", _gamepad.getRawAxis(3));
 		
-		SmartDashboard.putNumber("Left Drive", _leftDrive.get());
-		SmartDashboard.putNumber("Right Drive", _rightDrive.get() * -1.0);
-		
-		while(_gamepad.getRawButton(1)) {
-			_robotDrive.tankDrive(_gamepad.getRawAxis(2) * -1.0, -_gamepad.getRawAxis(3) * -1.0);
-		}
-		
-		
-		/*
-		// Print Motor Outputs
-		for(int i = 0; 0 <= 3; i++) {			
-			System.out.println(talonList.get(i).getMotorOutputPercent());
-		}
-		*/
+		//SmartDashboard.putNumber("Left Drive", _leftDrive.get());
+		//SmartDashboard.putNumber("Right Drive", _rightDrive.get() * -1.0);
 	}
 	
 	/**
