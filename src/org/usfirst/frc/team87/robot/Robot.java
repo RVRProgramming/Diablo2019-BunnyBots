@@ -82,7 +82,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		
+		gyro.calibrate();
 	}
 
 	/**
@@ -94,6 +94,7 @@ public class Robot extends IterativeRobot {
 
 		teleopCommand = teleopCommandSendableChooser.getSelected();
 
+		SmartDashboard.putNumber("Gyro", gyro.getRate());
 
 		SmartDashboard.putNumber("Gamepad Left Value", _gamepad.getRawAxis(2));
 		SmartDashboard.putNumber("Gamepad Right Value", _gamepad.getRawAxis(3));
