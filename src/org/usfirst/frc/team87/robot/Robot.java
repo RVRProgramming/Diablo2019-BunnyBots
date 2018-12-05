@@ -7,35 +7,12 @@
 
 package org.usfirst.frc.team87.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.AnalogAccelerometer;
-import edu.wpi.first.wpilibj.command.*;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.DigitalSource;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.GyroBase;
-import edu.wpi.first.wpilibj.Timer;
-
-import java.awt.List;
-import java.util.ArrayList;
-
-import org.usfirst.frc.team87.robot.commands.ArcadeDrive;
-import org.usfirst.frc.team87.robot.commands.TankDrive;
 import org.usfirst.frc.team87.robot.subsystems.DriveBase;
-
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
+import org.usfirst.frc.team87.robot.commands.*;
+import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.command.*;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -48,41 +25,19 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 public class Robot extends IterativeRobot {
 	
 	Timer timer = new Timer();
-
+	
+	AnalogGyro gyro = new AnalogGyro(0);
+	
 	Command tankDriveCommand;
 	Command arcadeDriveCommand;
 	Command teleopCommand;
 	
-	SendableChooser<Command> teleopCommandSC = new SendableChooser<>();
+	SendableChooser<Command> teleopCommandSendableChooser = new SendableChooser<>();
 	
 	DriveBase driveBase = new DriveBase();
 	
-	/*
-
-	// PWM Vex Motor
-	PWMVictorSPX _PWMVICTOR = new PWMVictorSPX(0);
 	
-	WPI_TalonSRX _leftFrontMotor = new WPI_TalonSRX(RobotMap.LEFTFRONTMOTOR);
-	WPI_TalonSRX _leftRearMotor = new WPI_TalonSRX(RobotMap.LEFTREARMOTOR);
-	WPI_TalonSRX _rightFrontMotor = new WPI_TalonSRX(RobotMap.RIGHTFRONTMOTOR);
-	WPI_TalonSRX _rightRearMotor = new WPI_TalonSRX(RobotMap.RIGHTREARMOTOR);
-	
-	ArrayList<WPI_TalonSRX> talonList = new ArrayList<WPI_TalonSRX>();
-	
-	//{_leftFrontMotor, _leftRearMotor, _rightFrontMotor, _rightRearMotor};
-	
-	SpeedControllerGroup _leftDrive = new SpeedControllerGroup(_leftFrontMotor, _leftRearMotor);
-	SpeedControllerGroup _rightDrive = new SpeedControllerGroup(_rightFrontMotor, _rightRearMotor);
-	
-	DifferentialDrive _robotDrive = new DifferentialDrive(_leftDrive, _rightDrive);
-
-	
-	int kP, kI, kD = 0;
-	//PIDController leftPidController = new PIDController(kP, kI, kD, leftEncoder, _leftDrive);
-	//PIDController rightPidController = new PIDController(kP, kI, kD, rightEncoder, _rightDrive);
-	 */
-	
-//	Gyro gyro = new GyroBase(0);
+	//Gyro gyro = new GyroBase(0);
 	
 	Joystick _joystick = new Joystick(0);
 	Joystick _gamepad = new Joystick(1);
@@ -96,9 +51,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.getNumber("Gamepad Left Value", 0.0);
 		SmartDashboard.getNumber("Gamepad Right Value", 0.0);
 		
-		teleopCommandSC.addObject("Arcade Drive", new ArcadeDrive());
-		teleopCommandSC.addDefault("Tank Drive", new TankDrive());
-		SmartDashboard.putData("Teleop Mode", teleopCommandSC);
+		// Have Arcade Drive As Default
+		teleopCommandSendableChooser.addDefault("Tank Drive", new TankDrive());
+		teleopCommandSendableChooser.addObject("Arcade Drive", new ArcadeDrive());
+		//SmartDashboard.putData("Teleop Mode", teleopCommandSendableChooser);
 	}
 
 	@Override
@@ -113,10 +69,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		/*
-		timer.reset();
-		timer.start();
-		*/
+
 	}
 
 	/**
@@ -139,20 +92,11 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 
-		teleopCommand = teleopCommandSC.getSelected();
-		// Deadband Elimination; Might Not Be Used
-		/*
-		double forward = _joystick.getY() * -1.0;
-		if(Math.abs(forward) < 0.10) {
-			forward = 0;
-		}
-		*/
+		teleopCommand = teleopCommandSendableChooser.getSelected();
+
 
 		SmartDashboard.putNumber("Gamepad Left Value", _gamepad.getRawAxis(2));
 		SmartDashboard.putNumber("Gamepad Right Value", _gamepad.getRawAxis(3));
-		
-		//SmartDashboard.putNumber("Left Drive", _leftDrive.get());
-		//SmartDashboard.putNumber("Right Drive", _rightDrive.get() * -1.0);
 	}
 	
 	/**

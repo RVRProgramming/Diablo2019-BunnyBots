@@ -27,9 +27,7 @@ public class DriveBase extends Subsystem implements PIDOutput{
     // here. Call these from Commands.
 	
 	PIDController pidController;
-	
-	PWMVictorSPX _PWMVICTOR = new PWMVictorSPX(0);
-	
+
 	WPI_TalonSRX _leftFrontMotor = new WPI_TalonSRX(RobotMap.LEFTFRONTMOTOR);
 	WPI_TalonSRX _leftRearMotor = new WPI_TalonSRX(RobotMap.LEFTREARMOTOR);
 	WPI_TalonSRX _rightFrontMotor = new WPI_TalonSRX(RobotMap.RIGHTFRONTMOTOR);
@@ -53,6 +51,14 @@ public class DriveBase extends Subsystem implements PIDOutput{
 	Joystick _gamepad = new Joystick(1);
 	
 	
+	// Deadband Elimination; Might Not Be Used
+	/*
+	double forward = _joystick.getY() * -1.0;
+	if(Math.abs(forward) < 0.10) {
+		forward = 0;
+	}
+	*/
+	
 	public DriveBase() {
 		//pidController = new PIDController(0, 0, 0);
 	}
@@ -72,8 +78,15 @@ public class DriveBase extends Subsystem implements PIDOutput{
 		_robotDrive.setDeadband(0.10);
 	}
 	
-	public void tankDrive(int leftSpeed, int rightSpeed, boolean pid) {
-		_robotDrive.tankDrive(leftSpeed, rightSpeed);
+	public void tankDrive(int leftSpeed, int rightSpeed) {
+		
+		_leftFrontMotor.set(ControlMode.PercentOutput, leftSpeed);
+		_leftRearMotor.set(ControlMode.PercentOutput, leftSpeed);
+		
+		_rightFrontMotor.set(ControlMode.PercentOutput, rightSpeed);
+		_rightRearMotor.set(ControlMode.PercentOutput, rightSpeed);
+		
+		//_robotDrive.tankDrive(leftSpeed, rightSpeed);
 	}
 
 	public void arcadeDrive(double speed, double rotation, boolean sqInp) {
