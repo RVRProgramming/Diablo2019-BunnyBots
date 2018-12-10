@@ -78,7 +78,7 @@ public class DriveBase extends Subsystem implements PIDOutput{
 		_robotDrive.setDeadband(0.10);
 	}
 	
-	public void tankDrive(int leftSpeed, int rightSpeed) {
+	public void tankDrive(double leftSpeed, double rightSpeed) {
 		
 		_leftFrontMotor.set(ControlMode.PercentOutput, leftSpeed);
 		_leftRearMotor.set(ControlMode.PercentOutput, leftSpeed);

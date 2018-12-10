@@ -7,12 +7,15 @@
 
 package org.usfirst.frc.team87.robot;
 
+import org.usfirst.frc.team87.robot.subsystems.Claw;
 import org.usfirst.frc.team87.robot.subsystems.DriveBase;
 import org.usfirst.frc.team87.robot.commands.*;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.command.*;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.*;
+
+import javax.sound.sampled.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,30 +29,29 @@ public class Robot extends IterativeRobot {
 	
 	Timer timer = new Timer();
 	
-	AnalogGyro gyro = new AnalogGyro(0);
-	
 	Command tankDriveCommand;
 	Command arcadeDriveCommand;
 	Command teleopCommand;
 	
 	SendableChooser<Command> teleopCommandSendableChooser = new SendableChooser<>();
 	
+	
+	Claw claw = new Claw();
 	DriveBase driveBase = new DriveBase();
-	
-	
-	//Gyro gyro = new GyroBase(0);
-	
+
 	Joystick _joystick = new Joystick(0);
 	Joystick _gamepad = new Joystick(1);
 	
+	static boolean arcadeActive;
 	
 	@Override
 	public void robotInit() {
 		driveBase.driveBaseInit();
-		
+		arcadeActive = false;
 		
 		SmartDashboard.getNumber("Gamepad Left Value", 0.0);
 		SmartDashboard.getNumber("Gamepad Right Value", 0.0);
+		SmartDashboard.getBoolean("Arcade Active", arcadeActive);
 		
 		// Have Arcade Drive As Default
 		teleopCommandSendableChooser.addDefault("Tank Drive", new TankDrive());
@@ -69,7 +71,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-
+		
 	}
 
 	/**
@@ -82,7 +84,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		gyro.calibrate();
+
 	}
 
 	/**
@@ -92,12 +94,19 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 
+		claw.run(_gamepad.getRawAxis(1));
 		teleopCommand = teleopCommandSendableChooser.getSelected();
-
-		SmartDashboard.putNumber("Gyro", gyro.getRate());
 
 		SmartDashboard.putNumber("Gamepad Left Value", _gamepad.getRawAxis(2));
 		SmartDashboard.putNumber("Gamepad Right Value", _gamepad.getRawAxis(3));
+		SmartDashboard.putBoolean("Arcade Active", arcadeActive);
+
+		
+		if(_gamepad.getRawButtonPressed(4) == arcadeActive) {
+			driveBase.arcadeDrive(_gamepad.getRawAxis(1) * -1.0, _gamepad.getRawAxis(4), false);
+		} else {
+			driveBase.tankDrive(_gamepad.getRawAxis(2), _gamepad.getRawAxis(3));
+		}
 	}
 	
 	/**

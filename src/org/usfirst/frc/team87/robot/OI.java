@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class OI {
 	
+	/*
+	 
 	Joystick leftJoystick = new Joystick(RobotMap.LEFTJOYSTICK);
 	Joystick rightJoystick = new Joystick(RobotMap.RIGHTJOYSTICK);
 	
@@ -58,4 +60,6 @@ public class OI {
 			}
 		});
 	}
+	
+	*/
 }
