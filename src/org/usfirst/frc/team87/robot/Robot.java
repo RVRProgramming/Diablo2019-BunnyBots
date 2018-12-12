@@ -10,13 +10,9 @@ package org.usfirst.frc.team87.robot;
 import org.usfirst.frc.team87.robot.subsystems.Claw;
 import org.usfirst.frc.team87.robot.subsystems.DriveBase;
 import org.usfirst.frc.team87.robot.subsystems.Intake;
-import org.usfirst.frc.team87.robot.commands.*;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.command.*;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.*;
-
-import javax.sound.sampled.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,39 +26,39 @@ public class Robot extends IterativeRobot {
 	
 	Timer timer = new Timer();
 	
-	Command tankDriveCommand;
-	Command arcadeDriveCommand;
-	Command teleopCommand;
+	// Command tankDriveCommand = new TankDrive();
+	// Command arcadeDriveCommand = new ArcadeDrive();
+	// Command teleopCommand;
 	
 	SendableChooser<Command> teleopCommandSendableChooser = new SendableChooser<>();
 	
 
-	PowerDistributionPanel pdp = new PowerDistributionPanel();
+//	PowerDistributionPanel pdp = new PowerDistributionPanel();
 	Intake intake = new Intake();
 	Claw claw = new Claw();
 	DriveBase driveBase = new DriveBase();
 
-	Joystick _joystick = new Joystick(0);
-	Joystick _gamepad = new Joystick(1);
-	
-	static boolean arcadeActive;
+	Joystick _joystick = new Joystick(RobotMap.JOYSTICK);
+	Joystick _gamepad = new Joystick(RobotMap.GAMEPAD);
+
+	int counter = 2;
 	
 	@Override
 	public void robotInit() {
+		
 		// Initialize our subsystems
+		claw.clawInit();
 		intake.initIntake();
 		driveBase.driveBaseInit();
-		arcadeActive = false;
 		
 		// Initialize Smartdashboard
 		SmartDashboard.getNumber("Gamepad Left", _gamepad.getRawAxis(2));
 		SmartDashboard.getNumber("Gamepad Right", _gamepad.getRawAxis(3));
 		SmartDashboard.getNumber("Joystick Y", _joystick.getY());
-		SmartDashboard.getBoolean("Arcade Active", arcadeActive);
-		
+
 		// Have Arcade Drive As Default
-		teleopCommandSendableChooser.addDefault("Tank Drive", new TankDrive());
-		teleopCommandSendableChooser.addObject("Arcade Drive", new ArcadeDrive());
+		//teleopCommandSendableChooser.addDefault("Tank Drive", new TankDrive());
+		//teleopCommandSendableChooser.addObject("Arcade Drive", new ArcadeDrive());
 		//SmartDashboard.putData("Teleop Mode", teleopCommandSendableChooser);
 		
 	}
@@ -92,7 +88,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-
 	}
 
 	/**
@@ -103,26 +98,44 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		
 		// Running subsystems that we created
-		intake.run(_gamepad.getY());
-		claw.run(_gamepad.getRawAxis(1));
+		intake.run(_gamepad.getRawAxis(0));
+		claw.run(_gamepad.getRawAxis(4));
 		
-		teleopCommand = teleopCommandSendableChooser.getSelected();
+		//teleopCommand = teleopCommandSendableChooser.getSelected();
 
 		// Smartboard requests
-		SmartDashboard.putNumber("Gamepad Left", _gamepad.getRawAxis(2));
-		SmartDashboard.putNumber("Gamepad Right", _gamepad.getRawAxis(3));
-		SmartDashboard.putNumber("Joystick Y", _joystick.getY());
-		SmartDashboard.putBoolean("Arcade Active", arcadeActive);
+//		SmartDashboard.putNumber("Gamepad Left", _gamepad.getRawAxis(2));
+//		SmartDashboard.putNumber("Gamepad Right", _gamepad.getRawAxis(3));
+//		SmartDashboard.putNumber("Joystick Y", _joystick.getY());
 
 		
 		// Test that Shuffleboard is working
-		System.out.println(SmartDashboard.getData("Number Slider"));
+//		System.out.println(SmartDashboard.getData("Number Slider"));
 		
+		// Joystick Inputs are reversed...
+		//driveBase.tankDrive(_gamepad.getRawAxis(5), _gamepad.getRawAxis(1));
+		
+		driveBase.run();
+		
+		/*
+		if(counter % 2 == 0) {
+			driveBase.tankDrive(_gamepad.getRawAxis(1) * -1.0, _gamepad.getRawAxis(5) * -1.0, _joystick.getRawAxis(3));
+		} else {
+			driveBase.arcadeDrive(-_joystick.getX() * -1.0, _joystick.getZ(), false);
+		}
+		
+		if(_gamepad.getRawButtonPressed(4))
+			counter += 1;
+		*/
+//		System.out.println(_joystick.getRawAxis(3)); 
+		
+		/*
 		if(_gamepad.getRawButtonPressed(4) == arcadeActive) {
 			driveBase.arcadeDrive(_gamepad.getRawAxis(1) * -1.0, _gamepad.getRawAxis(4), false);
 		} else {
 			driveBase.tankDrive(_gamepad.getRawAxis(2), _gamepad.getRawAxis(3));
 		}
+		*/
 	}
 	
 	/**

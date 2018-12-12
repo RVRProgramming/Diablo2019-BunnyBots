@@ -29,14 +29,16 @@ public class RobotMap {
 	public static int RIGHTFRONTMOTOR = 2;
 	public static int RIGHTREARMOTOR = 4;
 	
-	public static int LEFTCLAWMOTOR;
-	public static int RIGHTCLAWMOTOR;
+	public static int LEFTCLAWMOTOR = 5;
+	public static int RIGHTCLAWMOTOR = 6;
 	
 	public static int INTAKEMOTOR;
 	
 	
 	public static int kP, kI, kD, setpoint;
 	
+	
+	// Joystick is 0, Gamepad is 1
 	public static int JOYSTICK = 0;
 	public static int GAMEPAD = 1;
 	
