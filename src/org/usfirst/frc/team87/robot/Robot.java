@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team87.robot;
 
+import org.usfirst.frc.team87.robot.commands.ArcadeDriveCommand;
+import org.usfirst.frc.team87.robot.commands.TankDriveCommand;
 import org.usfirst.frc.team87.robot.subsystems.Claw;
 import org.usfirst.frc.team87.robot.subsystems.DriveBase;
 import org.usfirst.frc.team87.robot.subsystems.Intake;
@@ -23,20 +25,15 @@ import edu.wpi.first.wpilibj.*;
  */
 
 public class Robot extends IterativeRobot {
-	
-	Timer timer = new Timer();
-	
 	// Command tankDriveCommand = new TankDrive();
 	// Command arcadeDriveCommand = new ArcadeDrive();
 	// Command teleopCommand;
 	
 	SendableChooser<Command> teleopCommandSendableChooser = new SendableChooser<>();
 	
-
-//	PowerDistributionPanel pdp = new PowerDistributionPanel();
-	Intake intake = new Intake();
-	Claw claw = new Claw();
-	DriveBase driveBase = new DriveBase();
+	public static Intake intake = new Intake();
+	public static Claw claw = new Claw();
+	public static DriveBase driveBase = new DriveBase();
 
 	Joystick _joystick = new Joystick(RobotMap.JOYSTICK);
 	Joystick _gamepad = new Joystick(RobotMap.GAMEPAD);
@@ -52,15 +49,13 @@ public class Robot extends IterativeRobot {
 		driveBase.driveBaseInit();
 		
 		// Initialize Smartdashboard
-		SmartDashboard.getNumber("Gamepad Left", _gamepad.getRawAxis(2));
+		SmartDashboard.getNumber("Left Front Motor", _gamepad.getRawAxis(2));
 		SmartDashboard.getNumber("Gamepad Right", _gamepad.getRawAxis(3));
-		SmartDashboard.getNumber("Joystick Y", _joystick.getY());
 
 		// Have Arcade Drive As Default
-		//teleopCommandSendableChooser.addDefault("Tank Drive", new TankDrive());
-		//teleopCommandSendableChooser.addObject("Arcade Drive", new ArcadeDrive());
-		//SmartDashboard.putData("Teleop Mode", teleopCommandSendableChooser);
-		
+		teleopCommandSendableChooser.addDefault("Tank Drive", new TankDriveCommand());
+		teleopCommandSendableChooser.addObject("Arcade Drive", new ArcadeDriveCommand());
+		SmartDashboard.putData("Teleop Mode", teleopCommandSendableChooser);	
 	}
 
 	@Override
@@ -100,6 +95,7 @@ public class Robot extends IterativeRobot {
 		// Running subsystems that we created
 		intake.run(_gamepad.getRawAxis(0));
 		claw.run(_gamepad.getRawAxis(4));
+		driveBase.runTank();
 		
 		//teleopCommand = teleopCommandSendableChooser.getSelected();
 
@@ -115,7 +111,6 @@ public class Robot extends IterativeRobot {
 		// Joystick Inputs are reversed...
 		//driveBase.tankDrive(_gamepad.getRawAxis(5), _gamepad.getRawAxis(1));
 		
-		driveBase.run();
 		
 		/*
 		if(counter % 2 == 0) {
@@ -126,8 +121,8 @@ public class Robot extends IterativeRobot {
 		
 		if(_gamepad.getRawButtonPressed(4))
 			counter += 1;
+		System.out.println(_joystick.getRawAxis(3)); 
 		*/
-//		System.out.println(_joystick.getRawAxis(3)); 
 		
 		/*
 		if(_gamepad.getRawButtonPressed(4) == arcadeActive) {

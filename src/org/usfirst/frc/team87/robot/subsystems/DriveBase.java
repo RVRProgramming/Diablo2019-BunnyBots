@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 /**
@@ -89,9 +90,20 @@ public class DriveBase extends Subsystem {
 		_robotDrive.arcadeDrive(speed, rotation, sqInp);
 	}
 	
-	
-	public void run() {
+	public void runTank() {
 		_robotDrive.tankDrive(_gamepad.getRawAxis(1) * -1.0, _gamepad.getRawAxis(5) * -1.0);
+	}
+	
+	public void runArcade() {
+		_robotDrive.arcadeDrive(_gamepad.getRawAxis(1), _gamepad.getRawAxis(6));
+	}
+	
+	public void stopRun() {
+		_robotDrive.stopMotor();
+	}
+	
+	public void smartDashInit() {
+		//SmartDashboard.getNumber("Left Front Motor", defaultValue)
 	}
 	
     public void initDefaultCommand() {
