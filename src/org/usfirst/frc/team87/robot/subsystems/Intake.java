@@ -1,7 +1,6 @@
 package org.usfirst.frc.team87.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PWMVictorSPX;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Intake extends Subsystem {
