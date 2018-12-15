@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 //import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -25,6 +26,8 @@ public class DriveBase extends Subsystem {
 	WPI_TalonSRX _leftRearMotor = new WPI_TalonSRX(RobotMap.LEFTREARMOTOR);
 	WPI_TalonSRX _rightFrontMotor = new WPI_TalonSRX(RobotMap.RIGHTFRONTMOTOR);
 	WPI_TalonSRX _rightRearMotor = new WPI_TalonSRX(RobotMap.RIGHTREARMOTOR);
+	
+	ADXRS450_Gyro _gyro = new ADXRS450_Gyro();
 	
 	ArrayList<WPI_TalonSRX> talonList = new ArrayList<WPI_TalonSRX>();
 	
@@ -62,9 +65,11 @@ public class DriveBase extends Subsystem {
 		talonList.add(_rightRearMotor);
 		
 		
+		_leftFrontMotor.setInverted(true);
+		_leftRearMotor.setInverted(true);
+		//_rightFrontMotor.setInverted(true);
+		//_rightFrontMotor.setInverted(true);
 		
-		_rightFrontMotor.setInverted(true);
-		_rightFrontMotor.setInverted(true);
 		//_robotDrive.setDeadband(0.10);
 	}
 	
@@ -74,6 +79,12 @@ public class DriveBase extends Subsystem {
 		
 		_rightFrontMotor.set(ControlMode.PercentOutput, rightSpeed);
 		_rightRearMotor.set(ControlMode.PercentOutput, rightSpeed);
+	}
+	
+	public void autonomousArcade(double speed, double rotation, boolean sqInt) {
+		double error = -_gyro.getAngle();
+		double turn_power = 0 * error;
+		_robotDrive.arcadeDrive(speed, turn_power, sqInt);
 	}
 
 	public void customArcade(double speed, double rotation, boolean sqInp) {

@@ -1,17 +1,5 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Right Motor Output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="67"/>
-	</widget>
-	<widget field="Left Motor Output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="46"/>
-	</widget>
-	<widget field="Right Motor" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="3" y="25"/>
-	</widget>
-	<widget field="Left Motor" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="0"/>
-	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="0" y="355"/>
 		<property name="Camera Choice" value="USB Camera 0"/>
@@ -32,7 +20,52 @@
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="0" y="121"/>
 	</static-widget>
+	<widget field="Claw" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="21" y="2"/>
+	</widget>
+	<widget field="Intake" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="17" y="71"/>
+	</widget>
+	<widget field="DriveBase" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
+		<location x="10" y="48"/>
+	</widget>
+	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="22" y="27"/>
+	</widget>
 </dashboard>
 <live-window>
+	<widget field="DriveBase" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="6" y="16"/>
+	</widget>
+	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<widget field="ADXRS450_Gyro[0]" type="Gyro" class="edu.wpi.first.smartdashboard.gui.elements.Compass">
+			<location x="6" y="16"/>
+			<height>150</height>
+			<width>293</width>
+		</widget>
+		<widget field="SpeedControllerGroup[1]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="166"/>
+			<height>46</height>
+			<width>293</width>
+		</widget>
+		<widget field="PWMVictorSPX[0]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="212"/>
+			<height>46</height>
+			<width>293</width>
+		</widget>
+		<location x="1" y="4"/>
+		<width>305</width>
+		<height>265</height>
+	</widget>
+	<widget field="Claw" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="29" y="1"/>
+	</widget>
+	<widget field="Intake" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="23" y="17"/>
+	</widget>
 </live-window>
+	<hidden field="Left Motor Output"/>
+	<hidden field="Right Motor"/>
+	<hidden field="Left Motor"/>
+	<hidden field="Right Motor Output"/>
 </xml>

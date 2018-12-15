@@ -31,6 +31,10 @@ public class Claw extends Subsystem {
 	public void enableOpen() {
 		claw.set(0.50);
 	}
+	
+	public void stopClaw() {
+		claw.stopMotor();
+	}
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
