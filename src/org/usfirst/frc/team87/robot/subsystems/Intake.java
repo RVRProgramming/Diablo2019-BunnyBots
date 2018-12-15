@@ -6,9 +6,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Intake extends Subsystem {
 	
 	PWMVictorSPX _PWMVICTOR = new PWMVictorSPX(0);
-//	PWMVictorSPX _PWMVICTORRIGHT = new PWMVictorSPX(1);
-	
-//	SpeedControllerGroup _SPEEDCONTROLLERGROUP = new SpeedControllerGroup(_PWMVICTORLEFT, _PWMVICTORRIGHT);
+	//PWMVictorSPX _PWMVICTORRIGHT = new PWMVictorSPX(1);
+	//SpeedControllerGroup _SPEEDCONTROLLERGROUP = new SpeedControllerGroup(_PWMVICTORLEFT, _PWMVICTORRIGHT);
 	
 	public Intake() {
 		

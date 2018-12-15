@@ -6,15 +6,18 @@
 /*----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team87.robot;
-
-import org.usfirst.frc.team87.robot.commands.ArcadeDriveCommand;
-import org.usfirst.frc.team87.robot.commands.TankDriveCommand;
+//
+//import org.usfirst.frc.team87.robot.commands.ArcadeDriveCommand;
+//import org.usfirst.frc.team87.robot.commands.TankDriveCommand;
 import org.usfirst.frc.team87.robot.subsystems.DriveBase;
 import org.usfirst.frc.team87.robot.subsystems.Intake;
 import org.usfirst.frc.team87.robot.subsystems.Claw;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.*;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 /**
@@ -40,6 +43,9 @@ public class Robot extends IterativeRobot {
 	ADXRS450_Gyro _gyro = new ADXRS450_Gyro();
 	Joystick _joystick = new Joystick(RobotMap.JOYSTICK);
 	Joystick _gamepad = new Joystick(RobotMap.GAMEPAD);
+	
+	
+	Timer timer = new Timer();
 
 	@Override
 	public void robotInit() {
@@ -53,12 +59,12 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData(driveBase);
 		SmartDashboard.putData(claw);
 		SmartDashboard.putData(intake);
-		
+		SmartDashboard.putNumber("Gyro", _gyro.getRate());
 		
 		// Have Arcade Drive As Default
-		teleopCommandSendableChooser.addDefault("Tank Drive", new TankDriveCommand());
-		teleopCommandSendableChooser.addObject("Arcade Drive", new ArcadeDriveCommand());
-		SmartDashboard.putData("Teleop Mode", teleopCommandSendableChooser);	
+		//teleopCommandSendableChooser.addDefault("Tank Drive", new TankDriveCommand());
+		//teleopCommandSendableChooser.addObject("Arcade Drive", new ArcadeDriveCommand());
+		//SmartDashboard.putData("Teleop Mode", teleopCommandSendableChooser);	
 	}
 
 	@Override
@@ -73,6 +79,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		timer.reset();
+		timer.start();
 		
 	}
 
@@ -81,7 +89,14 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		
 		Scheduler.getInstance().run();
+		if(timer.get() < 10.0) {
+			driveBase.customArcade(-0.7, 0, false);
+			//driveBase.customTank(-0.45, 0.5);
+		} else {
+			driveBase.stopRun();
+		}
 	}
 
 	@Override
@@ -95,15 +110,20 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-
-		System.out.println(_gyro.getRate());
 		
-		claw.run(_gamepad.getRawAxis(4));
-		driveBase.runTank();
+		SmartDashboard.getNumber("Gyro", _gyro.getRate());
 		
-		_gamepad.getPOV(360);
-		_gamepad.getPOV(180);
+		// Subsystems
+		intake.run(_joystick.getRawAxis(1) * -1.0);
+		claw.run(_joystick.getRawAxis(2));
+		driveBase.customArcade(_gamepad.getRawAxis(1), _gamepad.getRawAxis(4), false);
 		
+		while(_joystick.getRawButton(3)) {
+			claw.enableClose();
+		}
+		while(_joystick.getRawButton(4)) {
+			claw.enableOpen();
+		}
 		
 		//teleopCommand = teleopCommandSendableChooser.getSelected();
 		/*

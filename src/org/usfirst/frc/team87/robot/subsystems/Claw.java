@@ -21,7 +21,15 @@ public class Claw extends Subsystem {
 	}
 	
 	public void run(double speed) {
-		claw.set(speed);
+		claw.set(speed * 0.5);
+	}
+	
+	public void enableClose() {
+		claw.set(-0.50);
+	}
+	
+	public void enableOpen() {
+		claw.set(0.50);
 	}
 
     public void initDefaultCommand() {

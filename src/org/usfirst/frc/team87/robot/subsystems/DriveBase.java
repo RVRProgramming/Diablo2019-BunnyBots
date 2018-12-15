@@ -60,12 +60,18 @@ public class DriveBase extends Subsystem {
 		talonList.add(_leftRearMotor);
 		talonList.add(_rightFrontMotor);
 		talonList.add(_rightRearMotor);
+		
+		
+		
+		_rightFrontMotor.setInverted(true);
+		_rightFrontMotor.setInverted(true);
 		//_robotDrive.setDeadband(0.10);
 	}
 	
 	public void customTank(double leftSpeed, double rightSpeed) {
 		_leftFrontMotor.set(ControlMode.PercentOutput, leftSpeed);
-		_leftRearMotor.set(ControlMode.PercentOutput, leftSpeed);		
+		_leftRearMotor.set(ControlMode.PercentOutput, leftSpeed);
+		
 		_rightFrontMotor.set(ControlMode.PercentOutput, rightSpeed);
 		_rightRearMotor.set(ControlMode.PercentOutput, rightSpeed);
 	}
