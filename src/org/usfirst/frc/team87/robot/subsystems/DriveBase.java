@@ -65,8 +65,8 @@ public class DriveBase extends Subsystem {
 		talonList.add(_rightRearMotor);
 		
 		
-		_leftFrontMotor.setInverted(true);
-		_leftRearMotor.setInverted(true);
+		_leftFrontMotor.setInverted(false);
+		_leftRearMotor.setInverted(false);
 		//_rightFrontMotor.setInverted(true);
 		//_rightFrontMotor.setInverted(true);
 		
@@ -84,11 +84,11 @@ public class DriveBase extends Subsystem {
 	public void autonomousArcade(double speed, double rotation, boolean sqInt) {
 		double error = -_gyro.getAngle();
 		double turn_power = 0 * error;
-		_robotDrive.arcadeDrive(speed, turn_power, sqInt);
+		_robotDrive.arcadeDrive(-speed, turn_power, sqInt);
 	}
 
 	public void customArcade(double speed, double rotation, boolean sqInp) {
-		_robotDrive.arcadeDrive(speed, rotation, sqInp);
+		_robotDrive.arcadeDrive(-speed, -rotation, sqInp);
 	}
 	
 	public void runTank() {

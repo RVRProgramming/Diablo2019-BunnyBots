@@ -92,7 +92,7 @@ public class Robot extends IterativeRobot {
 		
 		Scheduler.getInstance().run();
 		if(timer.get() < 10.0) {
-			driveBase.autonomousArcade(0, 0, true);
+			driveBase.autonomousArcade(0.75, 0, true);
 			//driveBase.customTank(-0.45, 0.5);
 		} else {
 			driveBase.stopRun();
@@ -114,9 +114,9 @@ public class Robot extends IterativeRobot {
 				
 		// Subsystems
 		intake.run(_joystick.getRawAxis(1) * -1.0);
-		claw.run(_joystick.getRawAxis(2) * 0.5);
-		driveBase.customArcade(_gamepad.getRawAxis(4) * -0.75, _gamepad.getRawAxis(1) * -1.0, false);
-//		
+		claw.run(_joystick.getRawAxis(2) * 0.75);
+//		driveBase.customArcade(_gamepad.getRawAxis(4) * 0.75, _gamepad.getRawAxis(1) * 1.0, false);
+		driveBase.customArcade(_gamepad.getRawAxis(1) * -1.0, _gamepad.getRawAxis(4) * -1.0, false);
 //		do {claw.enableClose();}while(_joystick.getRawButton(3));
 //		do {claw.enableOpen();}while(_joystick.getRawButton(4));
 	}
